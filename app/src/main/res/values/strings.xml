@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Pokelab</string>
+    <string name="background">background</string>
+    <string name="pokemon">pokemon</string>
+    <string name="no_data">No data exists</string>
+    <string name="no_data_exists">does not have any evolutions</string>
+    <string name="search_pokemons">Search pokemons by name or id</string>
+    <string name="pokedex">Pokedex</string>
+    <string name="mime">MR-MIME</string>
+</resources>

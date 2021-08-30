@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+
+        <shape>
+
+            <gradient
+                android:angle="270"
+                android:centerColor="@color/offwhite"
+                android:centerY="0.75"
+                android:endColor="@color/offwhite"
+                android:startColor="@color/offwhite" />
+
+        </shape>
+
+    </item>
+
+
+    <item android:id="@android:id/secondaryProgress">
+
+        <clip>
+
+            <layer-list>
+
+                <item android:drawable="@drawable/ic_stripe_pg_background" />
+
+            </layer-list>
+
+        </clip>
+
+    </item>
+
+
+    <item android:id="@android:id/progress">
+
+        <clip>
+
+            <shape>
+
+                <gradient
+                    android:angle="270"
+                    android:centerColor="@color/colorNextChallengeBtn"
+                    android:centerY="0.75"
+                    android:endColor="@color/colorNextChallengeBtn"
+                    android:startColor="@color/colorNextChallengeBtn" />
+
+            </shape>
+
+        </clip>
+
+    </item>
+
+</layer-list>

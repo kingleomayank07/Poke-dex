@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.android.pokedex.ui.fragments.HomeFragment"
+        android:label="HomeFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        app:popUpToInclusive="true"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_pokemonProfileDetail"
+            app:destination="@id/pokemonProfileDetail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_homeFragment_to_favoriteSection"
+            app:destination="@id/favoriteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.android.pokedex.ui.fragments.FavoriteFragment"
+        android:label="FavoriteFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_FavFragment_to_pokemonProfileDetail"
+            app:destination="@id/pokemonProfileDetail"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.android.pokedex.ui.fragments.SplashFragment"
+        android:label="SplashFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/pokemonProfileDetail"
+        android:name="com.android.pokedex.ui.fragments.PokemonDetailFragment"
+        android:label="PokemonProfileDetail"
+        tools:layout="@layout/fragment_pokemon_profile_detail"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right">
+
+        <argument
+            android:name="pokemon"
+            app:argType="com.android.pokedex.data.model.Pokemon"
+            app:nullable="true" />
+
+        <argument
+            android:name="pokemon_name"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="is_from_evolution"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.android.pokedex.ui.fragments.AboutFragment"
+        android:label="AboutFragment"
+        tools:layout="@layout/fragment_about">
+
+        <argument
+            android:name="color"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+        <argument
+            android:name="pokemon_details"
+            app:argType="com.android.pokedex.data.model.pokemondetailsmodels.PokemonDetails"
+            app:nullable="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/evolutionFragment"
+        android:name="com.android.pokedex.ui.fragments.EvolutionFragment"
+        android:label="EvolutionFragment"
+        tools:layout="@layout/fragment_evolution">
+
+        <argument
+            android:name="pokemon_id"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+        <argument
+            android:name="color"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+        <argument
+            android:name="pokemon_name"
+            android:defaultValue="null"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/movesFragment"
+        android:name="com.android.pokedex.ui.fragments.MovesFragment"
+        android:label="MovesFragment"
+        tools:layout="@layout/moves_fragment">
+
+        <argument
+            android:name="pokemon_details"
+            app:argType="com.android.pokedex.data.model.pokemondetailsmodels.PokemonDetails"
+            app:nullable="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/statsFragment"
+        android:name="com.android.pokedex.ui.fragments.StatsFragment"
+        android:label="StatsFragment"
+        tools:layout="@layout/fragment_stats">
+
+        <argument
+            android:name="color"
+            android:defaultValue="0"
+            app:argType="integer" />
+
+        <argument
+            android:name="pokemon_details"
+            app:argType="com.android.pokedex.data.model.pokemondetailsmodels.PokemonDetails"
+            app:nullable="true" />
+
+    </fragment>
+
+</navigation>
