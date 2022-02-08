@@ -1,6 +1,7 @@
 package com.android.pokedex.data.model
 
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.android.pokedex.data.api.ApiService
 import retrofit2.HttpException
 import java.io.IOException
@@ -27,6 +28,10 @@ class PokePagingSource(
         } catch (e: HttpException) {
             LoadResult.Error(e)
         }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, Pokemon>): Int? {
+        return null
     }
 
 }

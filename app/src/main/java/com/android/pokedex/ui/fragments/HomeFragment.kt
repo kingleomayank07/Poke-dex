@@ -2,7 +2,9 @@ package com.android.pokedex.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.android.pokedex.R
 import com.android.pokedex.data.api.ApiServiceImpl
 import com.android.pokedex.data.model.Pokemon
+import com.android.pokedex.databinding.FragmentHomeBinding
 import com.android.pokedex.ui.adapter.PokeLoadStateAdapter
 import com.android.pokedex.ui.adapter.PokePagingDataAdapter
 import com.android.pokedex.ui.viewmodels.HomeViewModel
@@ -26,10 +29,9 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 
-class HomeFragment : Fragment(R.layout.fragment_home), View.OnClickListener {
+class HomeFragment : Fragment(), View.OnClickListener {
 
     private var mRewardedAd: RewardedAd? = null
     private var mTAG = HomeFragment::class.simpleName
@@ -69,16 +71,28 @@ class HomeFragment : Fragment(R.layout.fragment_home), View.OnClickListener {
         Log.d("TAG", "User earned the reward.${rewardType}")
     }
 
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         loadAds()
-        fav_sec.setOnClickListener(this)
+        binding.favSec.setOnClickListener(this)
         navigateToDetailScreenObserver()
 
-        floating_search_view.onSearch {
-            pg.hideShowView(true)
-            val name = floating_search_view.text.toString().toLowerCase(Locale.ROOT)
+        binding.floatingSearchView.onSearch {
+            binding.pg.root.hideShowView(true)
+            val name = binding.floatingSearchView.text.toString().lowercase(Locale.ROOT)
             if (name.contains(" ")) {
                 _homeViewModel.getPokemonDetail(name.replace(" ", "-"))
             } else {
@@ -127,22 +141,22 @@ class HomeFragment : Fragment(R.layout.fragment_home), View.OnClickListener {
     }
 
     private fun navigateToDetailScreenObserver() {
-        _homeViewModel.pokemonDetailObserver().observe(viewLifecycleOwner, {
+        _homeViewModel.pokemonDetailObserver().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.ERROR -> {
                     Toast.makeText(
                         requireContext(),
-                        "oops! ${floating_search_view.text} is not a correct pokemon name",
+                        "oops! ${binding.floatingSearchView.text} is not a correct pokemon name",
                         Toast.LENGTH_SHORT
                     ).show()
-                    pg.hideShowView(false)
+                    binding.pg.root.hideShowView(false)
                 }
                 Status.LOADING -> {
-                    pg.hideShowView(true)
+                    binding.pg.root.hideShowView(true)
                 }
                 Status.SUCCESS -> {
-                    floating_search_view.setText("")
-                    pg.hideShowView(false)
+                    binding.floatingSearchView.setText("")
+                    binding.pg.root.hideShowView(false)
                     if (!it?.data?.name.isNullOrEmpty()) {
                         findNavController().navigate(
                             R.id.pokemonProfileDetail,
@@ -162,7 +176,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), View.OnClickListener {
                     ).show()
                 }
             }
-        })
+        }
     }
 
     override fun onResume() {
@@ -174,20 +188,20 @@ class HomeFragment : Fragment(R.layout.fragment_home), View.OnClickListener {
     }
 
     private fun observePagingPokemons(mAdapter: PokePagingDataAdapter) {
-        _homeViewModel.getAllPokemons.observe(viewLifecycleOwner, {
+        _homeViewModel.getAllPokemons().observe(viewLifecycleOwner) {
             mAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-        })
+        }
         setUpRecycler(mAdapter)
     }
 
     private fun setUpRecycler(mAdapter: PokePagingDataAdapter) {
-        pokemon_recycler.setHasFixedSize(true)
+        binding.pokemonRecycler.setHasFixedSize(true)
         val adapter = mAdapter.withLoadStateHeaderAndFooter(
             header = PokeLoadStateAdapter(),
             footer = PokeLoadStateAdapter()
         )
-        pokemon_recycler.layoutManager = GridLayoutManager(requireContext(), 2)
-        pokemon_recycler.adapter = adapter
+        binding.pokemonRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.pokemonRecycler.adapter = adapter
     }
 
     override fun onClick(v: View?) {

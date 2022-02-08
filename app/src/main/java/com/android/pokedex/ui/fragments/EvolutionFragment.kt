@@ -3,7 +3,9 @@ package com.android.pokedex.ui.fragments
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -14,27 +16,36 @@ import com.android.pokedex.data.api.ApiServiceImpl
 import com.android.pokedex.data.model.EvolutionChainList
 import com.android.pokedex.data.model.Pokemon
 import com.android.pokedex.data.model.evolution.EvolutionResponse
+import com.android.pokedex.databinding.FragmentEvolutionBinding
 import com.android.pokedex.ui.adapter.EvolutionAdapter
 import com.android.pokedex.ui.viewmodels.EvolutionViewModel
 import com.android.pokedex.utils.Status
 import com.android.pokedex.utils.Utils.hideShowView
 import com.android.pokedex.utils.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_evolution.*
-import kotlinx.android.synthetic.main.layout_full_pg.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 
-class EvolutionFragment : Fragment(R.layout.fragment_evolution),
+class EvolutionFragment : Fragment(),
     EvolutionAdapter.OnPokemonClickedListener {
 
     private val _EvolutionFragmentArgs: EvolutionFragmentArgs by navArgs()
     private val _EvolutionViewModel: EvolutionViewModel by
     viewModels(factoryProducer = { ViewModelFactory(ApiServiceImpl(), null) })
+    private var _binding: FragmentEvolutionBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentEvolutionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getSpecies(_EvolutionFragmentArgs.pokemonId)
-        progress_bar.progress_icon.indeterminateDrawable.setColorFilter(
+        binding.progressBar.progressIcon.indeterminateDrawable.setColorFilter(
             _EvolutionFragmentArgs.color,
             PorterDuff.Mode.MULTIPLY
         )
@@ -159,19 +170,19 @@ class EvolutionFragment : Fragment(R.layout.fragment_evolution),
         if (evolutionChainList.size == 1) {
             showEmptyMessage()
         } else {
-            evolution_recycler.adapter =
+            binding.evolutionRecycler.adapter =
                 EvolutionAdapter(
                     chain = evolutionChainList,
                     onPokemonClick = this,
                     pokemonName = _EvolutionFragmentArgs.pokemonName
                 )
         }
-        progress_bar.hideShowView(false)
+        binding.progressBar.root.hideShowView(false)
     }
 
     private fun showEmptyMessage() {
-        empty_message.hideShowView(true)
-        empty_message.text =
+        binding.emptyMessage.hideShowView(true)
+        binding.emptyMessage.text =
             _EvolutionFragmentArgs.pokemonName.plus(" ${getString(R.string.no_data_exists)}")
                 .capitalize(Locale.ROOT)
     }

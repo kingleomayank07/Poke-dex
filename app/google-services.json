@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314587089928:android:a97c52934de8d1d5dbd5bd",
+        "android_client_info": {
+          "package_name": "com.android.pokedex.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314587089928-bp2jqhf6ems5gejnqs3kdn7dvuaparg1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHYUYRpZLaJ-Son99OW04CFHDKCXIXrh0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314587089928-bp2jqhf6ems5gejnqs3kdn7dvuaparg1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

@@ -4,16 +4,29 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.android.pokedex.R
+import com.android.pokedex.databinding.FragmentStatsBinding
 import com.android.pokedex.utils.Utils.hideShowView
-import kotlinx.android.synthetic.main.fragment_stats.*
 
-class StatsFragment : Fragment(R.layout.fragment_stats) {
+class StatsFragment : Fragment() {
+
     private val _fragArgs: StatsFragmentArgs by navArgs()
+    private var _binding: FragmentStatsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentStatsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,8 +48,8 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
     }
 
     private fun showEmptyMessage() {
-        skill_empty_tv.text = getString(R.string.no_data)
-        skill_empty_tv.hideShowView(true)
+        binding.skillEmptyTv.text = getString(R.string.no_data)
+        binding.skillEmptyTv.hideShowView(true)
     }
 
     private fun setViewImage(skillType: String?, skillValue: Int?) {
@@ -44,7 +57,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
             return
 
         val skillView: View =
-            LayoutInflater.from(skill_list_container.context)
+            LayoutInflater.from(binding.skillListContainer.context)
                 .inflate(R.layout.skill_item_for_pokemon_profile, null, false)
         val skillTitleTextView = skillView.findViewById<TextView>(R.id.skill_title_txt)
         val skill_title_valueView = skillView.findViewById<TextView>(R.id.skill_title_value)
@@ -63,7 +76,7 @@ class StatsFragment : Fragment(R.layout.fragment_stats) {
             skillValueImgView.hideShowView(false)
             skillValueEmptyView.hideShowView(true)
         }
-        skill_list_container.addView(skillView)
+        binding.skillListContainer.addView(skillView)
     }
 
 

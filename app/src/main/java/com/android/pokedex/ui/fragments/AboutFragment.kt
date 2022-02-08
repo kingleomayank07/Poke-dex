@@ -5,29 +5,40 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.android.pokedex.R
 import com.android.pokedex.data.model.pokemondetailsmodels.PokemonDetails
+import com.android.pokedex.databinding.FragmentAboutBinding
 import com.android.pokedex.ui.viewmodels.AboutViewModel
 import com.android.pokedex.utils.Constants
 import com.android.pokedex.utils.Status
 import com.android.pokedex.utils.Utils.fromHtml
 import com.android.pokedex.utils.Utils.hideShowView
-import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.layout_full_pg.view.*
 import java.util.*
 
-
-class AboutFragment : Fragment(R.layout.fragment_about) {
+class AboutFragment : Fragment() {
 
     private val _aboutFragmentArgs: AboutFragmentArgs by navArgs()
     private val _aboutViewModel: AboutViewModel by viewModels()
     private lateinit var ttobj: TextToSpeech
     private lateinit var mData: String
+    private var _binding: FragmentAboutBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,18 +53,18 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         ttobj.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
             override fun onDone(utteranceId: String) {
                 Log.d("TAG", "onDone: ${utteranceId}")
-                sound.drawable.setTint(resources.getColor(R.color.black))
+                binding.sound.drawable.setTint(resources.getColor(R.color.black))
             }
 
             override fun onError(utteranceId: String) {}
             override fun onStart(utteranceId: String) {
                 Log.d("TAG", "onDone: ${utteranceId}")
-                sound.drawable.setTint(resources.getColor(R.color.colorSecondary))
+                binding.sound.drawable.setTint(resources.getColor(R.color.colorSecondary))
             }
         })
 
         _aboutViewModel.getBiography(_aboutFragmentArgs.pokemonDetails)
-        progress_bar.progress_icon.indeterminateDrawable.setColorFilter(
+        binding.progressBar.progressIcon.indeterminateDrawable.setColorFilter(
             _aboutFragmentArgs.color,
             PorterDuff.Mode.MULTIPLY
         )
@@ -62,7 +73,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     override fun onResume() {
         super.onResume()
-        sound.setOnClickListener {
+        binding.sound.setOnClickListener {
             ttobj.speak(mData, TextToSpeech.QUEUE_FLUSH, null)
         }
     }
@@ -84,29 +95,29 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
                         ?.fromHtml()
                         .toString()
 
-                    bio.text = mData
-                    group_divider.hideShowView(true)
-                    progress_bar.hideShowView(false)
+                    binding.bio.text = mData
+                    binding.groupDivider.hideShowView(true)
+                    binding.progressBar.root.hideShowView(false)
                 }
                 Status.LOADING -> {
-                    group_divider.hideShowView(false)
-                    progress_bar.hideShowView(true)
+                    binding.groupDivider.hideShowView(false)
+                    binding.progressBar.root.hideShowView(true)
                 }
                 Status.ERROR -> {
-                    group_divider.hideShowView(true)
-                    progress_bar.hideShowView(false)
+                    binding.groupDivider.hideShowView(true)
+                    binding.progressBar.root.hideShowView(false)
                 }
                 else -> {
-                    group_divider.hideShowView(true)
-                    progress_bar.hideShowView(false)
+                    binding.groupDivider.hideShowView(true)
+                    binding.progressBar.root.hideShowView(false)
                 }
             }
         })
     }
 
     private fun setUI(pokemon: PokemonDetails?) {
-        pokemon_weight.text = pokemon?.weight?.div(10).toString().plus("kg")
-        pokemon_height.text = pokemon?.height?.toFloat()?.div(10).toString().plus("m")
+        binding.pokemonWeight.text = pokemon?.weight?.div(10).toString().plus("kg")
+        binding.pokemonHeight.text = pokemon?.height?.toFloat()?.div(10).toString().plus("m")
     }
 
 }

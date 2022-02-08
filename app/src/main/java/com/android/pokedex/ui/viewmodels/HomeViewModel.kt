@@ -13,7 +13,7 @@ private const val CURRENT_LIMIT = 20
 
 class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
-    val getAllPokemons = repository.getAllPokemon(CURRENT_LIMIT).cachedIn(viewModelScope)
+    fun getAllPokemons() = repository.getAllPokemon(CURRENT_LIMIT).cachedIn(viewModelScope)
 
     private val mPokemonDetails = MutableLiveData<Resource<PokemonDetails?>>()
 
@@ -30,6 +30,5 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     }
 
     fun pokemonDetailObserver() = mPokemonDetails
-
 
 }

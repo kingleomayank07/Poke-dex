@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PokedexV1"
-        tools:ignore="AllowBackup">
+        tools:ignore="AllowBackup"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        tools:targetApi="s">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -24,7 +26,8 @@
 
         <activity
             android:name="com.android.pokedex.ui.activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:exported="true"
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

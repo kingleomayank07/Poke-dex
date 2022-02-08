@@ -4,10 +4,11 @@ import android.graphics.PorterDuff.Mode
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -27,6 +28,7 @@ import com.android.pokedex.data.model.Pokemon
 import com.android.pokedex.data.model.cache.CachedPokemons
 import com.android.pokedex.data.model.pokemondetailsmodels.PokemonDetails
 import com.android.pokedex.data.model.pokemondetailsmodels.Type
+import com.android.pokedex.databinding.FragmentPokemonProfileDetailBinding
 import com.android.pokedex.ui.adapter.ViewPagerAdapter
 import com.android.pokedex.ui.viewmodels.PokemonDetailViewModel
 import com.android.pokedex.utils.Constants.TAB_LIST
@@ -42,15 +44,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_pokemon_profile_detail.*
-import kotlinx.android.synthetic.main.layout_full_pg.view.*
-import kotlinx.android.synthetic.main.layout_toolbar_home.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 
-
-class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail),
-    View.OnClickListener {
+class PokemonDetailFragment : Fragment(), View.OnClickListener {
 
     //region variables
     private val mTAG = PokemonDetailFragment::class.java.simpleName
@@ -61,7 +57,18 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
     private var _isFromEvolution = false
     private var _isFav = false
     private var _colorInt = 0
+    private var _binding: FragmentPokemonProfileDetailBinding? = null
+    private val binding get() = _binding!!
     //endregion
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPokemonProfileDetailBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,7 +94,7 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
         Coroutines.io {
             val cachedPokemon = _pokemonDetailViewModel.getPokemon(name)
             if (cachedPokemon?.id != null) {
-                fav.setColorFilter(
+                binding.fav.setColorFilter(
                     ContextCompat.getColor(
                         requireContext(),
                         R.color.colorSecondary
@@ -121,18 +128,18 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
                     if (_args.pokemonName == null) {
                         setUpTabLayout(it.data)
                     }
-                    container.hideShowView(true)
-                    progress_bar.hideShowView(false)
+                    binding.container.hideShowView(true)
+                    binding.progressBar.root.hideShowView(false)
                 }
                 Status.LOADING -> {
                     Log.d(mTAG, "observePokemonDetails: ${it.data}")
                 }
                 Status.ERROR -> {
-                    progress_bar.hideShowView(false)
+                    binding.progressBar.root.hideShowView(false)
                     Log.d(mTAG, "observePokemonDetails: ${it.data}")
                 }
                 else -> {
-                    progress_bar.hideShowView(false)
+                    binding.progressBar.root.hideShowView(false)
                     Log.d(mTAG, "observePokemonDetails: ${it.data}")
                 }
             }
@@ -166,13 +173,13 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
             textView.text = type.type.name.capitalize(Locale.ROOT)
         }
         cardView.addView(textView)
-        type.addView(cardView)
+        binding.type.addView(cardView)
     }
 
     private fun setUI(pokemon: Pokemon?) {
-        toolbar.back.setOnClickListener(this)
-        fav.setOnClickListener(this)
-        pokemon_name.text = pokemon?.name
+        binding.toolbar.back.setOnClickListener(this)
+        binding.fav.setOnClickListener(this)
+        binding.pokemonName.text = pokemon?.name
         val url = if (!_isFromEvolution) {
             pokemon?.url?.split(
                 "/pokemon/"
@@ -207,14 +214,14 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
                             )
                         )
                     )
-                    progress_bar.progress_icon.indeterminateDrawable.setColorFilter(
+                    binding.progressBar.progressIcon.indeterminateDrawable.setColorFilter(
                         _colorInt,
                         Mode.MULTIPLY
                     )
-                    imageView3.drawable.setTint(_colorInt)
+                    binding.imageView3.drawable.setTint(_colorInt)
                     requireActivity().window.statusBarColor = _colorInt
-                    tab_layout.setSelectedTabIndicatorColor(_colorInt)
-                    tab_layout.setTabTextColors(
+                    binding.tabLayout.setSelectedTabIndicatorColor(_colorInt)
+                    binding.tabLayout.setTabTextColors(
                         resources.getColor(
                             R.color.grey,
                             requireContext().theme
@@ -223,14 +230,14 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
                     return false
                 }
             })
-            .into(poke_img)
+            .into(binding.pokeImg)
 
     }
 
     private fun setUIByName(pokemon: PokemonDetails?) {
-        toolbar.back.setOnClickListener(this)
-        fav.setOnClickListener(this)
-        pokemon_name.text = pokemon?.name
+        binding.toolbar.back.setOnClickListener(this)
+        binding.fav.setOnClickListener(this)
+        binding.pokemonName.text = pokemon?.name
         Glide.with(this)
             .load(pokemon?.id.toString().getPokemonImgFromNameOrId())
             .listener(object : RequestListener<Drawable> {
@@ -258,14 +265,14 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
                             )
                         )
                     )
-                    progress_bar.progress_icon.indeterminateDrawable.setColorFilter(
+                    binding.progressBar.progressIcon.indeterminateDrawable.setColorFilter(
                         _colorInt,
                         Mode.MULTIPLY
                     )
-                    imageView3.drawable.setTint(_colorInt)
+                    binding.imageView3.drawable.setTint(_colorInt)
                     requireActivity().window.statusBarColor = _colorInt
-                    tab_layout.setSelectedTabIndicatorColor(_colorInt)
-                    tab_layout.setTabTextColors(
+                    binding.tabLayout.setSelectedTabIndicatorColor(_colorInt)
+                    binding.tabLayout.setTabTextColors(
                         resources.getColor(
                             R.color.grey,
                             requireContext().theme
@@ -275,7 +282,7 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
                     return false
                 }
             })
-            .into(poke_img)
+            .into(binding.pokeImg)
 
     }
 
@@ -293,13 +300,13 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
         pagerAdapter.addFragment(EvolutionFragment())
         pagerAdapter.addFragment(MovesFragment())
 
-        pager.adapter = pagerAdapter
+        binding.pager.adapter = pagerAdapter
 
-        TabLayoutMediator(tab_layout, pager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
             tab.text = TAB_LIST[position]
         }.attach()
 
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -339,7 +346,7 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
         val name =
             if (!_args.pokemon?.name.isNullOrEmpty()) _args.pokemon?.name else _args.pokemonName
         _isFav = false
-        fav.setColorFilter(
+        binding.fav.setColorFilter(
             ContextCompat.getColor(requireContext(), R.color.white), Mode.MULTIPLY
         )
         Coroutines.io {
@@ -355,7 +362,7 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_pokemon_profile_detail)
         val name =
             if (!_args.pokemon?.name.isNullOrEmpty()) _args.pokemon?.name else _args.pokemonName
         _isFav = true
-        fav.setColorFilter(
+        binding.fav.setColorFilter(
             ContextCompat.getColor(
                 requireContext(),
                 R.color.colorSecondary

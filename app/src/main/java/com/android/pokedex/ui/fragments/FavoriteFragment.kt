@@ -1,7 +1,9 @@
 package com.android.pokedex.ui.fragments
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +14,7 @@ import com.android.pokedex.R
 import com.android.pokedex.data.api.ApiServiceImpl
 import com.android.pokedex.data.model.Pokemon
 import com.android.pokedex.data.model.cache.CachedPokemons
+import com.android.pokedex.databinding.FragmentFavoriteBinding
 import com.android.pokedex.ui.adapter.FavoriteAdapter
 import com.android.pokedex.ui.viewmodels.PokemonDetailViewModel
 import com.android.pokedex.utils.Status
@@ -19,9 +22,7 @@ import com.android.pokedex.utils.Utils.hideKeyboard
 import com.android.pokedex.utils.Utils.hideShowView
 import com.android.pokedex.utils.Utils.onSearch
 import com.android.pokedex.utils.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     FavoriteAdapter.OnPokemonClickedListener {
@@ -30,6 +31,17 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     viewModels(factoryProducer = { ViewModelFactory(ApiServiceImpl(), App.getInstance()) })
     private var _cachedPokemon: List<CachedPokemons> = ArrayList()
     private val adapter = FavoriteAdapter(_cachedPokemon, this)
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,9 +49,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
         observeFavoritePokemons()
         navigateToDetailScreenObserver()
 
-        floating_search_view.onSearch {
-            pg.hideShowView(true)
-            val name = floating_search_view.text.toString().toLowerCase(Locale.ROOT)
+        binding.floatingSearchView.onSearch {
+            binding.pg.root.hideShowView(true)
+            val name = binding.floatingSearchView.text.toString().toLowerCase(Locale.ROOT)
             if (name.contains(" ")) {
                 _pokemonDetailViewModel.getPokemonDetail(name.replace(" ", "-"))
             } else {
@@ -50,22 +62,22 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     }
 
     private fun navigateToDetailScreenObserver() {
-        _pokemonDetailViewModel.pokemonDetailObserver().observe(viewLifecycleOwner, {
+        _pokemonDetailViewModel.pokemonDetailObserver().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.ERROR -> {
                     Toast.makeText(
                         requireContext(),
-                        "oops! ${floating_search_view.text} is not a correct pokemon name",
+                        "oops! ${binding.floatingSearchView.text} is not a correct pokemon name",
                         Toast.LENGTH_SHORT
                     ).show()
-                    pg.hideShowView(false)
+                    binding.pg.root.hideShowView(false)
                 }
                 Status.LOADING -> {
-                    pg.hideShowView(true)
+                    binding.pg.root.hideShowView(true)
                 }
                 Status.SUCCESS -> {
-                    floating_search_view.setText("")
-                    pg.hideShowView(false)
+                    binding.floatingSearchView.setText("")
+                    binding.pg.root.hideShowView(false)
                     if (!it?.data?.name.isNullOrEmpty()) {
                         findNavController().navigate(
                             R.id.pokemonProfileDetail,
@@ -85,17 +97,17 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
                     ).show()
                 }
             }
-        })
+        }
     }
 
     private fun observeFavoritePokemons() {
-        _pokemonDetailViewModel.getCachedPokemonList()?.observe(viewLifecycleOwner, {
+        _pokemonDetailViewModel.getCachedPokemonList()?.observe(viewLifecycleOwner) {
             _cachedPokemon = it
             adapter.setList(_cachedPokemon)
-            pokemon_recycler.layoutManager =
+            binding.pokemonRecycler.layoutManager =
                 GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-            pokemon_recycler.adapter = adapter
-        })
+            binding.pokemonRecycler.adapter = adapter
+        }
     }
 
     override fun onResume() {
