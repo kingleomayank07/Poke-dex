@@ -1,8 +1,7 @@
 package com.android.pokedex
 
 import android.app.Application
-import android.util.Log
-import com.google.android.gms.ads.MobileAds
+import com.android.pokedex.data.api.network.SingleOkHttpClient
 
 class App : Application() {
     private val TAG = App::class.simpleName
@@ -17,5 +16,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         app = this
+        SingleOkHttpClient.init(applicationContext)
     }
 }

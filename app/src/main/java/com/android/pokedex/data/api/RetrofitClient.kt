@@ -1,5 +1,6 @@
 package com.android.pokedex.data.api
 
+import com.android.pokedex.data.api.network.SingleOkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -11,6 +12,7 @@ object RetrofitClient {
         Retrofit
             .Builder()
             .baseUrl(BASE_URL)
+            .client(SingleOkHttpClient.getOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(PokeApiEndPoint::class.java)
     }
